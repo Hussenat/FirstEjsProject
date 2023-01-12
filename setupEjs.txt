@@ -1,0 +1,234 @@
+Contents
+1. introduction to Ejs
+2. Passing data to Ejs
+3. if, else in Ejs
+4. loop in Ejs
+5. layout in Ejs
+6. styling
+7. deploy our app to cyclic
+
+What is Template Engine or Language?
+A template engine enables you to use static template files in your application. At runtime, the template engine replaces variables in 
+a template file with actual value, and transforms the template into an HTML file sent to the client. This approach makes it easier to design an HTML pages.
+
+-the below is a static data of three different people render statically
+	index.html			index.html			index.html
+	----------------------		----------------------		----------------------
+	<h1>Name: Hussenat</h1>		<h1>Name: Hussenat</h1>		<h1>Name: Hussenat</h1>
+    	<p>Profession: Developer</p>	<p>Profession: Developer</p>	<p>Profession: Developer</p>
+	---------------------------	--------------------------	----------------------------
+- for us to render more name and profession we need to use dynamic render technology such as EJS like this
+	<h1>Name: <%=name%></h1>
+	<p>Profession: <%=profession%></p>
+the above tags is an Ejs express tags which can render dynamic content
+
+The purpose of Templating Engine: is to render dynamic content on the html page.
+
+EJS (Embedded JavaScript Templating Language) is one of the most popular template engine for JavaScript. As the name suggests, it lets us embed javascript code in 
+a template language that is then used to generate html
+
+Type of Template Language
+- Ejs 
+- handlebars
+- pug and etc
+
+Ejs allows us to run and write plain javascript in Html page.
+Ejs is very simple, lightweight, fast compare to other templating language.
+Ejs is the most downloaded templating language on npm
+Ejs is founded in February, 2011.
+
+How to use Ejs
+install: npm install ejs
+app.set('view engine', 'ejs'); // this is how to setup ejs inside backend server
+
+View -> index.ejs  // create a folder named views to hold all pages you want to render in frontend.
+res.render('index', {}); // this is how to send data to frontend from backend server
+
+A package.json file is a file used to manage our dependencies, thirdparty libaries and also used in the execution of our codes
+
+Let setup project in vscode
+- create a folder named FirstEjsProject
+- open vscode terminal and type this command to generate package.json file
+C:\FirstEjsProject> npm init
+or 
+C:\FirstEjsProject> npm init -y
+
+let install expressjs to build the backend server like this
+C:\FirstEjsProject> npm install express@4.18.2
+- let create index.js inside the root folder as the entry point to setup the backend server
+
+- install nodemon to watch out for changes 
+ - it automatically serves the backend server up
+ C:\FirstEjsProject> npm i -D nodemon@2.0.20 -D means it is used for development
+- let use nodemon inside package.json scripts object from this 
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+to this
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": " node index.js",
+    "dev": "nodemon index.js"
+  },
+- let setup backend basic server structure in index.js file
+const express = require('express'); // is the way to import dependency or package or third party library 
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+//sending a response to frontend or clientside
+app.get('/', (req, res) => {
+    res.send('Welcome to EJS');
+});
+
+app.listen(PORT, () => {
+    console.log(`sever is running at http://localhost:${PORT}`);
+});
+
+let startup our backend server like this
+C:\FirstEjsProject> npm start
+OR
+C:\FirstEjsProject> npm run dev
+- let click on this url -> sever is running at http://localhost:3001
+its return Welcome to EJS
+
+- let create views folder inside the root folder to store all our ejs files
+- create index.ejs file inside views folder to write our dynamic html tags or elements
+- let generate our html basic structure inside index.ejs file
+
+- let render the content from views/
+- let install ejs package like this
+C:\FirstEjsProject> npm i ejs@3.1.8
+- let use the ejs right after the PORT like this
+
+app.get('/', (req, res) => {
+    res.status(200).send('<h1>Welcome to EJS<h1>');
+});
+to thisapp.get('/', (req, res) => {
+    // res.status(200).send('<h1>Welcome to EJS<h1>');
+    res.status(200).render('index');
+});
+
+- let add .gitignore file inside the root folder to ignore node_modules
+- let setup .gitignore file
+
+- create another views/contact.ejs file 
+- we want to render dynamic content with html file by changing the title tags from this
+<title>Document</title>
+to this
+<title> <%= pageTitle %> </title>
+- back to the index.js file to add the dynamic value onto app.get() api or route like this
+app.get('/', (req, res) => {
+    res.status(200).render('index', { pageTitle: 'Home Page' });
+});
+
+- let copy and paste the content of index.ejs to contact.ejs file 
+- let create route or api for contact.ejs file inside the index.js backend server like this
+app.get('/contact', (req, res) => {
+    res.status(200).render('contact', { pageTitle: 'Home Page' });
+});
+- let go the browser to render the contact.ejs page like this
+http://localhost:3001/contact
+- let create p/Names array of string right after app.set("view engine", ejs) like thislet plNames = ['c', 'c++']; 
+let plNames = ['c', 'c++']; 
+- let pass this array onto our ejs file like this
+app.get('/', (req, res) => {
+    res
+    .status(200)
+    .render('index', { pageTitle: 'Home Page', proNames: plNames });
+});
+
+- let setup views/index.ejs file by adding header, main and footer tags
+-  let refresh the browser to re-render the update content
+- copy the content of the index.ejs to contact.ejs
+
+- let access the proNames array of string send from the backend server on index.ejs file
+<main>
+        <ul>
+            <li> <%= proNames[0] %> </li>
+            <li> <%= proNames[1] %> </li>
+        </ul>
+</main>
+
+- let use if then else statement in ejs page like this
+<main>
+        <ul>
+           <% if(proNames.length > 0){%>
+            <li><%= proNames[0] %></li>
+            <li><%= proNames[1] %></li>
+            <% }else{ %>
+                <p>No data available</p>
+            <% } %>
+        </ul>
+</main>
+
+- let add more elements onto proNames inside the backend server
+let plNames = ['c', 'c++', 'java', 'python']; 
+with the above we need to use for loop to read the content of the array like this
+<main>
+        <ul>
+           <% for(let i=0; i < proNames.length; i++){ %>
+            <li><%= proNames[i]%></li>
+            <% } %>
+        </ul>
+</main>
+
+- let create a form tags to add a dynamic elements or item onto proNames array of string inside the backend server like this
+
+<form action="/" method="post">
+            <input 
+                type="text" 
+                placeholder="enter a name of programming language" 
+                name="plName" 
+            />
+            <button type="submit">Add Data</button>
+</form>
+- let refresh the browser to view the new content
+
+- let add css to style our view file then creating public/css/style.css inside the root folder
+- we need to let the backend server file which is index.js  file know that we have some static folder 
+inside public folder in root folder by adding 
+app.use(express.static('public'));
+
+<link rel="stylesheet" href="/css/style.css" />
+- let setup style.css
+
+- let add app.post route or api inorder to insert data onto plnames array if string from frontend  or clientside like this
+app.post('/', (req, res) => {
+    const plName = req.body.plName;
+    console.log(plName);
+    // res.status(201).send('data is created');
+});
+the above block of code throw error when yiu add value onto input field and press Add Data button 
+- let fix 
+app.use(express.urlencoded({ extended: true }));
+let text our app and view the output inside terminal because the console.log() method is from the backend
+- let use the third party library to send data from frontend to backend by installing body-parser like this
+C:\FirstEjsProject> npm i body-parser@1.20.1
+
+- you may ask question of why are we using dependency or third party library to send data from front to backend  since we have built-in 
+app.use(express.urlencoded({ extended: true })); by expressjs. The reason is that sometimes expressjs do remove this middleware from their package 
+that is y I choose to use body-parser package to send data from clientside to backend.
+- import body-parser package onto index.js file like this
+const bodyParser = require('body-parser');
+let replace this middleware app.use(express.urlencoded({ extended: true })); 
+with this
+app.use(bodyParser.urlencoded({ extended: true }));
+- let re-test our app again on the browser
+
+- Layout of EJS
+- create a folder named layout inside views folder
+- create header.ejs and footer.ejs file inside layout folder
+- let open index.ejs file and cut the html tags from <!DOCTYP html> to </header> tags
+- paste the copied tags from index.ejs onto header.ejs file and save
+- let cut html tags from <footer> to </html> and paste it onto footer.ejs file and save
+- next is to use header.ejs and footer.ejs inside index.ejs file like this
+<%- include("layout/header")%>
+<%- include("layout/footer")%>
+- let refresh the app to see it working 
+
+- let deploy onto our github account
+- login to your github account
+* create a respositories with your folder by clicking on New Respository
+C:\FirstEjsProject> git init
+C:\FirstEjsProject> git status
